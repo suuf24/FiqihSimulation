@@ -1023,6 +1023,94 @@
         .result-overlay, .review-overlay { background: rgba(255, 252, 242, 0.98); }
         .score-circle { border-color: #d7b56d; color: #0f7b5c; }
 
+
+        /* --- BRIGHTER REVIEW DETAIL UPDATE ---
+           Makes the answer review easier to read with lighter cards,
+           stronger status contrast, and a clearer Ask Google action. */
+        #review-modal.review-overlay {
+            background:
+                radial-gradient(circle at 12% 8%, rgba(215, 181, 109, 0.26), transparent 28%),
+                radial-gradient(circle at 88% 90%, rgba(15, 123, 92, 0.18), transparent 32%),
+                linear-gradient(135deg, #fffdf7 0%, #f4fbf6 48%, #fff6df 100%);
+        }
+
+        #review-modal .result-content {
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(215, 181, 109, 0.34);
+            border-radius: 26px;
+            padding: 24px;
+            box-shadow: 0 22px 55px rgba(23, 59, 47, 0.14);
+        }
+
+        #review-modal .review-header {
+            background: linear-gradient(135deg, rgba(15, 123, 92, 0.11), rgba(215, 181, 109, 0.16));
+            border: 1px solid rgba(15, 123, 92, 0.12);
+            border-radius: 20px;
+            padding: 16px 18px;
+            margin-bottom: 22px;
+        }
+
+        #review-modal .review-header h2 {
+            color: #0b5d45;
+            font-weight: 900;
+        }
+
+        #review-modal .review-list {
+            padding: 4px 10px 4px 2px;
+        }
+
+        #review-modal .review-item {
+            border: 1px solid rgba(15, 123, 92, 0.12);
+            border-left-width: 8px;
+            border-radius: 18px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 12px 28px rgba(23, 59, 47, 0.08);
+        }
+
+        #review-modal .review-item.correct {
+            background: linear-gradient(135deg, #edfff5 0%, #ffffff 76%);
+            border-left-color: #198754;
+        }
+
+        #review-modal .review-item.wrong {
+            background: linear-gradient(135deg, #fff0ec 0%, #fffdf7 74%);
+            border-left-color: #c94c4c;
+            box-shadow: 0 14px 32px rgba(201, 76, 76, 0.12);
+        }
+
+        #review-modal .review-q {
+            color: #12382c;
+            font-size: 1.04rem;
+            line-height: 1.55;
+            margin-bottom: 10px;
+        }
+
+        #review-modal .review-ans {
+            background: rgba(255, 255, 255, 0.68);
+            border-radius: 14px;
+            padding: 10px 12px;
+            color: #325044;
+            opacity: 1;
+            line-height: 1.6;
+        }
+
+        #review-modal .google-search-link {
+            margin-top: 12px;
+            padding: 9px 15px;
+            background: linear-gradient(135deg, #fff2c9, #d7b56d);
+            border: 1px solid rgba(185, 139, 50, 0.42);
+            color: #173b2f;
+            box-shadow: 0 8px 18px rgba(185, 139, 50, 0.22);
+        }
+
+        #review-modal .google-search-link:hover {
+            background: linear-gradient(135deg, #0f7b5c, #0b5d45);
+            border-color: #0f7b5c;
+            color: #ffffff;
+            box-shadow: 0 10px 24px rgba(15, 123, 92, 0.24);
+        }
+
         @media (min-width: 1024px) {
             body { overflow: hidden; }
             .quiz-container {
