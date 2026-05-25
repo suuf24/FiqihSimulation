@@ -35,6 +35,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* Unified app typography: matches the multiple-choice option font everywhere. */
+        body,
+        button,
+        input,
+        select,
+        textarea {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
@@ -342,6 +350,30 @@
 
         .review-ans span {
             font-weight: bold;
+        }
+
+        /* Small helper link shown only on wrong answers in the review modal. */
+        .google-search-link {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            margin-top: 10px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(15, 123, 92, 0.1);
+            border: 1px solid rgba(15, 123, 92, 0.18);
+            color: var(--accent-color);
+            font-size: 0.88rem;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .google-search-link:hover {
+            background: #fff8e6;
+            border-color: var(--secondary-color);
+            color: #9a7425;
+            transform: translateY(-1px);
         }
 
         .text-correct {
@@ -2274,27 +2306,53 @@ const masterData = [
             }
 
             // --- Scoring & Results ---
+            escapeHTML(value) {
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
+            buildGoogleSearchURL(questionText) {
+                // Query uses the plain question text only; answers are intentionally excluded.
+                return `https://www.google.com/search?q=${encodeURIComponent(`${questionText} secara singkat dan diksi untuk anak SD`)}`;
+            }
+
             showResults() {
                 // Calculate Score Logic Immediate
                 let score = 0;
 
-                // Store review HTML generation for openReview
-                this.lastReviewHTML = '';
-                this.dataset.forEach((q, idx) => {
+                // Build review items as data first, then sort wrong answers above correct answers.
+                const reviewItems = this.dataset.map((q, idx) => {
                     const userAns = this.userAnswers[idx];
                     const isCorrect = userAns === q.correct;
                     if (isCorrect) score++;
 
-                    this.lastReviewHTML += `
-                        <div class="review-item ${isCorrect ? 'correct' : 'wrong'}">
-                            <div class="review-q">${idx + 1}. ${q.question}</div>
-                            <div class="review-ans">
-                                ${this.t('yourAnswer')}: <span class="${isCorrect ? 'text-correct' : 'text-wrong'}">${userAns || '-'}</span>
-                                ${!isCorrect ? `<br>${this.t('correctAnswer')}: <span class="text-correct">${q.correct}</span>` : ''}
+                    const googleSearchLink = !isCorrect
+                        ? `<a class="google-search-link" href="${this.buildGoogleSearchURL(q.question)}" target="_blank" rel="noopener noreferrer">Ask Google</a>`
+                        : '';
+
+                    return {
+                        isCorrect,
+                        html: `
+                            <div class="review-item ${isCorrect ? 'correct' : 'wrong'}">
+                                <div class="review-q">${idx + 1}. ${this.escapeHTML(q.question)}</div>
+                                <div class="review-ans">
+                                    ${this.t('yourAnswer')}: <span class="${isCorrect ? 'text-correct' : 'text-wrong'}">${this.escapeHTML(userAns || '-')}</span>
+                                    ${!isCorrect ? `<br>${this.t('correctAnswer')}: <span class="text-correct">${this.escapeHTML(q.correct)}</span>` : ''}
+                                </div>
+                                ${googleSearchLink}
                             </div>
-                        </div>
-                    `;
+                        `
+                    };
                 });
+
+                this.lastReviewHTML = reviewItems
+                    .sort((a, b) => Number(a.isCorrect) - Number(b.isCorrect))
+                    .map(({ html }) => html)
+                    .join('');
 
                 // Update UI elements
                 document.getElementById('final-score').textContent = score;
